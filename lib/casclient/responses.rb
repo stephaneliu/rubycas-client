@@ -65,6 +65,12 @@ module CASClient
         end
         
         @extra_attributes = {}
+
+        # Allow extra cas:attributes to be read for consistency with Java Client extra attributes implementation
+        @xml.elements.to_a('//cas:authenticationSuccess/cas:attributes/*').each do |el|
+          @extra_attributes[el.name] = el.text.strip
+        end
+
         @xml.elements.to_a('//cas:authenticationSuccess/*').each do |el|
           @extra_attributes.merge!(Hash.from_xml(el.to_s)) unless el.prefix == 'cas'
         end
